@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Your Own Chinese Avatar</title>
+    <!-- Importing attractive fonts for the name tag -->
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Luckiest+Guy&family=Zeyada&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --china-red: #cc0000;
+            --china-gold: #ffd700;
+            --soft-bg: #fff9f0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #fce4ec;
+            background-image: radial-gradient(#ffcdd2 0.5px, transparent 0.5px);
+            background-size: 20px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            margin: 0;
+            color: #2c3e50;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+            border: 6px solid var(--china-red);
+            max-width: 550px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            color: var(--china-red);
+            margin-top: 0;
+            font-size: 28px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        #avatar-box {
+            background: var(--soft-bg);
+            border-radius: 20px;
+            padding: 10px;
+            margin-bottom: 25px;
+            border: 2px solid #eee;
+            display: inline-block;
+            position: relative;
+        }
+
+        .editor-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            text-align: left;
+        }
+
+        .full-width { grid-column: span 2; }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        label {
+            font-weight: bold;
+            font-size: 14px;
+            color: #555;
+        }
+
+        input, select {
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--china-red);
+        }
+
+        .btn-download {
+            grid-column: span 2;
+            background-color: var(--china-red);
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            box-shadow: 0 4px 0 #900;
+        }
+
+        .btn-download:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #900;
+        }
+
+        canvas { display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>🏮 Chinese Avatar Creator 🏮</h1>
+        <p>Design your traditional character and save it!</p>
+
+        <div id="avatar-box">
+            <svg id="avatar-svg" width="320" height="420" viewBox="0 0 320 420" xmlns="http://www.w3.org/2000/svg">
+                <!-- BG Decoration -->
+                <circle cx="160" cy="160" r="150" fill="#fff" stroke="#ffeb3b" stroke-width="4"/>
+                
+                <!-- Neck -->
+                <rect x="145" y="225" width="30" height="20" fill="#ffdbac" id="svg-neck" />
+
+                <!-- Face -->
+                <circle cx="160" cy="160" r="75" fill="#ffdbac" id="svg-face" />
+
+                <!-- Eyes & Expressions Group -->
+                <g id="svg-expression"></g>
+
+                <!-- Hair Group -->
+                <g id="svg-hair"></g>
+
+                <!-- Clothing Layer -->
+                <g id="svg-outfit"></g>
+
+                <!-- Decorative Name Banner -->
+                <rect id="name-bg" x="60" y="325" width="200" height="45" rx="22" fill="rgba(255,255,255,0.8)" stroke="#ffd700" stroke-width="2" />
+
+                <!-- Name Tag -->
+                <text id="svg-name" x="160" y="358" font-family="'Pacifico', cursive" font-size="28" fill="#d32f2f" text-anchor="middle"></text>
+            </svg>
+        </div>
+
+        <div class="editor-grid">
+            <div class="form-group full-width">
+                <label>Type Your Name:</label>
+                <input type="text" id="name-in" placeholder="Enter your name..." maxlength="15" value="My Avatar">
+            </div>
+
+            <div class="form-group">
+                <label>Font Style:</label>
+                <select id="font-style-in">
+                    <option value="'Pacifico', cursive">Calligraphy ✨</option>
+                    <option value="'Luckiest Guy', cursive">Cartoon Bold 🎈</option>
+                    <option value="'Zeyada', cursive">Handwritten ✍️</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Outfit Type:</label>
+                <select id="gender-in">
+                    <option value="male">Samfoo (Boy)</option>
+                    <option value="female">Cheongsam (Girl)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Outfit Color:</label>
+                <select id="color-in">
+                    <option value="#d32f2f">Luck Red</option>
+                    <option value="#fbc02d">Royal Gold</option>
+                    <option value="#1976d2">Ocean Blue</option>
+                    <option value="#388e3c">Jade Green</option>
+                    <option value="#e91e63">Silk Pink</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Expression:</label>
+                <select id="expression-in">
+                    <option value="happy">Happy 😊</option>
+                    <option value="excited">Excited 🤩</option>
+                    <option value="cool">Cool 😎</option>
+                    <option value="wink">Wink 😉</option>
+                    <option value="surprised">Surprised 😮</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Skin Tone:</label>
+                <select id="skin-in">
+                    <option value="#ffdbac">Fair</option>
+                    <option value="#f1c27d">Natural</option>
+                    <option value="#e0ac69">Tan</option>
+                </select>
+            </div>
+
+            <div class="form-group full-width">
+                <label>Hairstyle:</label>
+                <select id="hair-in">
+                    <option value="short">Short Hair</option>
+                    <option value="long">Long Hair</option>
+                    <option value="buns">Double Buns (Ox Horns)</option>
+                    <option value="cap">Traditional Scholar Cap</option>
+                </select>
+            </div>
+
+            <button class="btn-download" id="btn-save">💾 DOWNLOAD MY AVATAR</button>
+        </div>
+    </div>
+
+    <canvas id="export-canvas" width="320" height="420"></canvas>
+
+    <script>
+        const nameIn = document.getElementById('name-in');
+        const fontStyleIn = document.getElementById('font-style-in');
+        const genderIn = document.getElementById('gender-in');
+        const colorIn = document.getElementById('color-in');
+        const skinIn = document.getElementById('skin-in');
+        const hairIn = document.getElementById('hair-in');
+        const expressionIn = document.getElementById('expression-in');
+        const btnSave = document.getElementById('btn-save');
+
+        const svgName = document.getElementById('svg-name');
+        const svgFace = document.getElementById('svg-face');
+        const svgNeck = document.getElementById('svg-neck');
+        const svgHair = document.getElementById('svg-hair');
+        const svgOutfit = document.getElementById('svg-outfit');
+        const svgExpression = document.getElementById('svg-expression');
+        const nameBg = document.getElementById('name-bg');
+
+        function updateAvatar() {
+            // Update Name and Font
+            svgName.textContent = nameIn.value;
+            svgName.setAttribute('font-family', fontStyleIn.value);
+            
+            // Adjust name background width based on name length
+            const nameLength = nameIn.value.length;
+            const newWidth = Math.max(120, nameLength * 15 + 40);
+            nameBg.setAttribute('width', newWidth);
+            nameBg.setAttribute('x', 160 - (newWidth / 2));
+
+            // Update Skin
+            const skin = skinIn.value;
+            svgFace.setAttribute('fill', skin);
+            svgNeck.setAttribute('fill', skin);
+
+            // Update Outfit
+            const color = colorIn.value;
+            const gender = genderIn.value;
+            
+            if (gender === 'male') {
+                svgOutfit.innerHTML = `
+                    <path d="M 70 240 Q 160 215 250 240 L 280 380 L 40 380 Z" fill="${color}" />
+                    <rect x="135" y="225" width="50" height="15" fill="${color}" rx="2" transform="translate(-10, 0)"/>
+                    <line x1="160" y1="240" x2="160" y2="380" stroke="rgba(255,255,255,0.4)" stroke-width="2" />
+                    <circle cx="160" cy="265" r="5" fill="white" />
+                    <circle cx="160" cy="295" r="5" fill="white" />
+                    <circle cx="160" cy="325" r="5" fill="white" />
+                `;
+            } else {
+                svgOutfit.innerHTML = `
+                    <path d="M 80 240 Q 160 220 240 240 L 265 380 L 55 380 Z" fill="${color}" />
+                    <rect x="135" y="225" width="50" height="15" fill="${color}" rx="5" transform="translate(-10, 0)"/>
+                    <path d="M 160 225 Q 215 230 240 275" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="4" />
+                    <circle cx="190" cy="235" r="4" fill="#ffd700" />
+                    <circle cx="218" cy="252" r="4" fill="#ffd700" />
+                `;
+            }
+
+            // Update Expression
+            const mood = expressionIn.value;
+            let eyes = `<circle cx="135" cy="155" r="6" fill="#000" /><circle cx="185" cy="155" r="6" fill="#000" />`;
+            let mouth = `<path d="M 145 185 Q 160 200 175 185" stroke="#000" stroke-width="3" fill="none" stroke-linecap="round" />`;
+
+            if (mood === 'excited') {
+                eyes = `<g transform="translate(135,155)"><path d="M -8 -8 L 8 8 M -8 8 L 8 -8" stroke="black" stroke-width="3"/></g><g transform="translate(185,155)"><path d="M -8 -8 L 8 8 M -8 8 L 8 -8" stroke="black" stroke-width="3"/></g>`;
+                mouth = `<path d="M 140 190 Q 160 215 180 190 Z" fill="#600" />`;
+            } else if (mood === 'cool') {
+                eyes = `<rect x="120" y="150" width="30" height="8" rx="2" fill="black"/><rect x="170" y="150" width="30" height="8" rx="2" fill="black"/>`;
+                mouth = `<line x1="145" y1="195" x2="175" y2="195" stroke="black" stroke-width="3" stroke-linecap="round"/>`;
+            } else if (mood === 'wink') {
+                eyes = `<path d="M 125 155 Q 135 145 145 155" stroke="black" stroke-width="3" fill="none"/><circle cx="185" cy="155" r="6" fill="#000" />`;
+                mouth = `<path d="M 145 190 Q 160 205 175 190" stroke="#000" stroke-width="3" fill="none" stroke-linecap="round" />`;
+            } else if (mood === 'surprised') {
+                eyes = `<circle cx="135" cy="155" r="8" fill="#000" /><circle cx="185" cy="155" r="8" fill="#000" />`;
+                mouth = `<circle cx="160" cy="195" r="10" fill="none" stroke="black" stroke-width="3"/>`;
+            }
+            svgExpression.innerHTML = eyes + mouth;
+
+            // Update Hair
+            const hair = hairIn.value;
+            svgHair.innerHTML = '';
+            if (hair === 'short') {
+                svgHair.innerHTML = `<path d="M 85 150 Q 85 80 160 80 Q 235 80 235 150 L 220 130 Q 160 110 100 130 Z" fill="#222" />`;
+            } else if (hair === 'long') {
+                svgHair.innerHTML = `<path d="M 85 150 Q 85 80 160 80 Q 235 80 235 150" stroke="#222" stroke-width="15" fill="none" /><rect x="80" y="150" width="15" height="100" fill="#222" rx="5" /><rect x="225" y="150" width="15" height="100" fill="#222" rx="5" /><path d="M 85 150 Q 85 80 160 80 Q 235 80 235 150 L 220 130 Q 160 110 100 130 Z" fill="#222" />`;
+            } else if (hair === 'buns') {
+                svgHair.innerHTML = `<circle cx="100" cy="95" r="25" fill="#222" /><circle cx="220" cy="95" r="25" fill="#222" /><path d="M 85 150 Q 85 85 160 85 Q 235 85 235 150 L 220 130 Q 160 115 100 130 Z" fill="#222" /><rect x="85" y="95" width="30" height="4" fill="${color}" transform="rotate(-10, 100, 95)"/><rect x="205" y="95" width="30" height="4" fill="${color}" transform="rotate(10, 220, 95)"/>`;
+            } else if (hair === 'cap') {
+                svgHair.innerHTML = `<path d="M 90 130 Q 160 60 230 130 Z" fill="#222" /><rect x="155" y="65" width="10" height="15" fill="#d32f2f" /><circle cx="160" cy="65" r="6" fill="#ffd700" />`;
+            }
+        }
+
+        [nameIn, fontStyleIn, genderIn, colorIn, skinIn, hairIn, expressionIn].forEach(el => {
+            el.addEventListener('input', updateAvatar);
+        });
+
+        btnSave.addEventListener('click', () => {
+            const svg = document.getElementById('avatar-svg');
+            const canvas = document.getElementById('export-canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Wait for Google Fonts to be ready before exporting
+            document.fonts.ready.then(() => {
+                const xml = new XMLSerializer().serializeToString(svg);
+                const svg64 = btoa(unescape(encodeURIComponent(xml)));
+                const b64Start = 'data:image/svg+xml;base64,';
+                const image64 = b64Start + svg64;
+
+                const img = new Image();
+                img.onload = function() {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    ctx.fillStyle = "#fff9f0"; 
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    ctx.drawImage(img, 0, 0);
+                    
+                    const pngUrl = canvas.toDataURL("image/png");
+                    const downloadLink = document.createElement("a");
+                    downloadLink.href = pngUrl;
+                    downloadLink.download = "my_chinese_avatar.png";
+                    document.body.appendChild(downloadLink);
+                    downloadLink.click();
+                    document.body.removeChild(downloadLink);
+                };
+                img.src = image64;
+            });
+        });
+
+        updateAvatar();
+    </script>
+</body>
+</html>
+
